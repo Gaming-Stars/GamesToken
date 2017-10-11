@@ -633,7 +633,7 @@ contract GamesToken is ERC20Token {
     //
     if (isPresale)
     {
-      require( icoEtherCrowd.add(msg.value) <= FUNDING_CAP_PRESALE );
+      require( presaleEtherCrowd.add(msg.value) <= FUNDING_CAP_PRESALE );
 
       if (atNow() < DATE_PRESALE_START + 1 days) {
         // first day

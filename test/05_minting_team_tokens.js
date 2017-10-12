@@ -188,7 +188,7 @@ contract('Minting Team Tokens', function (accounts) {
 
     //Minting anymore should now fail
     await assertFail(async () => {
-      await gamesToken.mintReserve(reserve_address, 1 * TOKENDEC, {from: owner});
+      await gamesToken.mintTeamLocked(team_address_locked, 1 * TOKENDEC, {from: owner});
     });
 
     //Check balances and total supply is correct
@@ -196,4 +196,65 @@ contract('Minting Team Tokens', function (accounts) {
     assert.equal((await gamesToken.balanceOf(team_address_unlocked)).toNumber(), (150 + 28800 + 9250) * TOKENDEC, "Balance should be (150 + 28800 + 9250)");
 
   });
+
+  it("6. check can transfer team unlocked tokens", async () => {
+
+    var gamesToken = await GamesToken.deployed();
+
+    //Should not be able to transfer
+    await assertFail(async () => {
+      await gamesToken.transfer(investor_1, 10 * TOKENDEC, {from: team_address_unlocked});
+    });
+    //Should not be able to transfer
+    await assertFail(async () => {
+      await gamesToken.transfer(investor_1, 10 * TOKENDEC, {from: team_address_locked});
+    });
+
+    await gamesToken.makeTradeable({from: owner});
+
+    //Original investor_1 balance
+    var investor_1_balance = await gamesToken.balanceOf(investor_1);
+    await gamesToken.transfer(investor_1, 10 * TOKENDEC, {from: team_address_unlocked});
+    var investor_1_new_balance = await gamesToken.balanceOf(investor_1);
+
+    //Check balances have updated
+    assert.equal(investor_1_new_balance.sub(investor_1_balance).toNumber(), 10 * TOKENDEC, "Balance should have transferred 10 tokens");
+
+  });
+
+  it("7. check can not transfer team locked tokens", async () => {
+
+    var gamesToken = await GamesToken.deployed();
+
+    //Should still not be able to transfer
+    await assertFail(async () => {
+      await gamesToken.transfer(investor_1, 10 * TOKENDEC, {from: team_address_locked});
+    });
+
+  });
+
+  it("8. check can transfer team locked tokens after lock up period", async () => {
+
+    var gamesToken = await GamesToken.deployed();
+
+    await gamesToken.setMockedNow(preSaleStartTime + (359 * ONEDAY));
+
+    //Should still not be able to transfer
+    await assertFail(async () => {
+      await gamesToken.transfer(investor_1, 10 * TOKENDEC, {from: team_address_locked});
+    });
+
+    await gamesToken.setMockedNow(preSaleStartTime + (361 * ONEDAY));
+
+    //Original investor_1 balance
+    var investor_1_balance = await gamesToken.balanceOf(investor_1);
+    await gamesToken.transfer(investor_1, 10 * TOKENDEC, {from: team_address_locked});
+    //New investor_1 balance
+    var investor_1_new_balance = await gamesToken.balanceOf(investor_1);
+
+    //Check balances have updated
+    assert.equal(investor_1_new_balance.sub(investor_1_balance).toNumber(), 10 * TOKENDEC, "Balance should have transferred 10 tokens");
+
+  });
+
 });

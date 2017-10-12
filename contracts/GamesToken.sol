@@ -681,9 +681,9 @@ contract GamesToken is ERC20Token {
     }
 
     if (isIco) {
-      balancesIco[msg.sender]   = balancesPresale[msg.sender].add(tokens);
+      balancesIco[msg.sender]   = balancesIco[msg.sender].add(tokens);
       tokensIssuedIco           = tokensIssuedIco.add(tokens);
-      balanceEthIco[msg.sender] = balanceEthPresale[msg.sender].add(msg.value);
+      balanceEthIco[msg.sender] = balanceEthIco[msg.sender].add(msg.value);
       icoEtherCrowd             = icoEtherCrowd.add(msg.value);
     }
 

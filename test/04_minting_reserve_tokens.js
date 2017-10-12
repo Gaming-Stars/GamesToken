@@ -174,4 +174,26 @@ contract('Minting Reserve Tokens', function (accounts) {
     assert.equal((await gamesToken.balanceOf(reserve_address)).toNumber(), (62499750 + 124200) * TOKENDEC, "Balance should be (62499750 + 124200)");
 
   });
+
+  it("6. check can transfer reserve tokens", async () => {
+
+    var gamesToken = await GamesToken.deployed();
+
+    //Should not be able to transfer
+    await assertFail(async () => {
+      await gamesToken.transfer(reserve_address, 10 * TOKENDEC, {from: investor_1});
+    });
+
+    await gamesToken.makeTradeable({from: owner});
+
+    //Original investor_1 balance
+    var investor_1_balance = await gamesToken.balanceOf(investor_1);
+    await gamesToken.transfer(investor_1, 10 * TOKENDEC, {from: reserve_address});
+    //New investor_1 balance
+    var investor_1_new_balance = await gamesToken.balanceOf(investor_1);
+
+    //Check balances have updated
+    assert.equal(investor_1_new_balance.sub(investor_1_balance).toNumber(), 10 * TOKENDEC, "Balance should have transferred 10 tokens");
+
+  });
 });

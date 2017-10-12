@@ -36,6 +36,7 @@ contract('Make Sale Purchases', function (accounts) {
     await gamesToken.sendTransaction({from: investor_2, value: 5 * ONEETHER});
 
     //Balance should be 5 * 1250 due to bonus on first two days of sale
+    assert.equal((await gamesToken.balanceOf(investor_1)).toNumber(), 1 * 2000 * TOKENDEC, "Balance should be 1 * 1250");
     assert.equal((await gamesToken.balanceOf(investor_2)).toNumber(), 5 * 1250 * TOKENDEC, "Balance should be 5 * 1250");
 
   });
@@ -114,4 +115,22 @@ contract('Make Sale Purchases', function (accounts) {
 
   });
 
+  it("6. check can transfer tokens", async () => {
+
+    var gamesToken = await GamesToken.deployed();
+
+    //Should not be able to transfer
+    await assertFail(async () => {
+      await gamesToken.transfer(investor_2, 10 * TOKENDEC, {from: investor_1});
+    });
+
+    await gamesToken.makeTradeable({from: owner});
+
+    await gamesToken.transfer(investor_2, 10 * TOKENDEC, {from: investor_1});
+
+    //Check balances have updated
+    assert.equal((await gamesToken.balanceOf(investor_1)).toNumber(), (83335000 - 10) * TOKENDEC, "Balance should be (83335000 - 10)");
+    assert.equal((await gamesToken.balanceOf(investor_2)).toNumber(), ((1000 * 1000) + ((5 * 1250) + 10)) * TOKENDEC, "Balance should be ((1000 * 1000) + ((5 * 1250) + 10))");
+
+  });
 });

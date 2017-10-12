@@ -36,10 +36,61 @@ Compiling ./contracts/mock/GamesTokenMock.sol...
 
 
   Contract: Check Initialisation
-    ✓ 0. check initialized token (61ms)
+    ✓ 0. check initialized token (80ms)
+
+  Contract: Check Variable Changes
+    ✓ 0. change wallet address (79ms)
+    ✓ 1. change start ico time (144ms)
+    ✓ 1. change end ico time (162ms)
+    ✓ 2. change funding cap (176ms)
+
+  Contract: Make Pre-Sale Purchases
+    ✓ 0. purchase in first day (114ms)
+    ✓ 1. purchase in second day (108ms)
+    ✓ 2. purchase in third day (100ms)
+    ✓ 3. purchase in fourth day (178ms)
+    ✓ 4. unable to purchase under minimum cap
+    ✓ 5. unable to breach max pre-sale cap
+
+  Contract: Make Sale Purchases
+    ✓ 0. purchase in sale first two days (159ms)
+    ✓ 1. purchase in second day (126ms)
+    ✓ 2. unable to purchase under minimum cap
+    ✓ 3. reach max sale cap (172ms)
+    ✓ 4. able to make purchase during extra time (55ms)
+    ✓ 5. unable to make purchases after extra time finishes (115ms)
+    ✓ 6. check can transfer tokens (128ms)
+
+  Contract: Minting Reserve Tokens
+    ✓ 0. investors purchase some tokens during pre-sale (193ms)
+    ✓ 1. reserve tokens minted during pre-sale (114ms)
+    ✓ 2. more tokens bought, more reserve tokens minted during pre-sale (189ms)
+    ✓ 3. more tokens bought sale, more reserve tokens minted during sale (232ms)
+    ✓ 4. cap met, more reserve tokens minted (228ms)
+    ✓ 5. ICO finished, more reserve tokens minted (181ms)
+    ✓ 6. check can transfer reserve tokens (119ms)
+
+  Contract: Minting Team Tokens
+    ✓ 0. investors purchase some tokens during pre-sale (274ms)
+    ✓ 1. team tokens minted during pre-sale (152ms)
+    ✓ 2. more tokens bought, more team tokens minted during pre-sale (220ms)
+    ✓ 3. more tokens bought sale, more team tokens minted during sale (253ms)
+    ✓ 4. cap met, more team tokens minted (289ms)
+    ✓ 5. ICO finished, more team tokens minted (253ms)
+    ✓ 6. check can transfer team unlocked tokens (136ms)
+    ✓ 7. check can not transfer team locked tokens
+    ✓ 8. check can transfer team locked tokens after lock up period (186ms)
+
+  Contract: Check Refunds And Withdrawals
+    ✓ 0. purchase in pre-sale first day (177ms)
+    ✓ 1. owner withdraws 25% of pre-sale ETH (294ms)
+    ✓ 2. owner changes wallet address, withdraws 25% of pre-sale ETH (276ms)
+    ✓ 3. investors purchase during sale, ether can't be withdrawn (155ms)
+    ✓ 4. ICO fails, pre-sale investors get partial refunds (535ms)
+    ✓ 5. ICO fails, sale investors get full refunds (269ms)
 
 
-  1 passing (85ms)
+  40 passing (7s)
 ```
 
 ## Deployment

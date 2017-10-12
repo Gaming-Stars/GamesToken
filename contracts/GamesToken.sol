@@ -289,8 +289,8 @@ contract GamesToken is ERC20Token {
 
   /* ICO parameters (some can be modified by owner after deployment) */
 
-  uint public dateICOStart = 1511438400; // 23-Nov-2017 12:00 UTC
-  uint public dateICOEnd   = 1514030400; // 23-Dec-2017 12:00 UTC
+  uint public dateIcoStart = 1511438400; // 23-Nov-2017 12:00 UTC
+  uint public dateIcoEnd   = 1514030400; // 23-Dec-2017 12:00 UTC
 
   uint public constant TOKETH_ICO_ONE = 1250 * E6; // first two days = 20% discount
   uint public constant TOKETH_ICO_TWO = 1000 * E6;
@@ -338,7 +338,7 @@ contract GamesToken is ERC20Token {
 
   /* Balances subject to lockup period */
 
-  mapping(address => uint) balancesLocked;
+  mapping(address => uint) public balancesLocked;
 
   // Events ---------------------------
 
@@ -365,7 +365,7 @@ contract GamesToken is ERC20Token {
 
   event TokensMintedTeam(
     address indexed _owner,
-    bool _locked,
+    bool indexed _locked,
     uint _tokens,
     uint _balance,
     uint _tokensIssuedTeam
@@ -436,7 +436,7 @@ contract GamesToken is ERC20Token {
   function isIcoFinished() constant
     returns (bool)
   {
-    if (!softCapReached && atNow() < dateICOEnd) return false;
+    if (!softCapReached && atNow() < dateIcoEnd) return false;
     if (isExtraTime()) return false;
     return true;
   }
@@ -473,20 +473,20 @@ contract GamesToken is ERC20Token {
     require( _start < DATE_PRESALE_START + 180 days );
 
     // the ICO start date can be modified only before the ICO starts
-    require( atNow() < dateICOStart );
+    require( atNow() < dateIcoStart );
 
     // the new date must be between presale end and ICO end dates
     require( _start > DATE_PRESALE_END );
-    require( _start < dateICOEnd );
+    require( _start < dateIcoEnd );
 
     // set new ICO start date
-    dateICOStart = _start;
+    dateIcoStart = _start;
     DatesIcoUpdated(_start, 0);
   }
 
   /* Change ICO end dates (can be done before ICO end) */
 
-  function updateIcoDateEnd(uint _end) onlyOwner
+  function updateDateIcoEnd(uint _end) onlyOwner
   {
     // sanity check #1: the new date must be in the future
     require( _end > atNow() );
@@ -501,10 +501,10 @@ contract GamesToken is ERC20Token {
     require( !isExtraTime() );
 
     // the new end date must be after the start date
-    require( _end > dateICOStart );
+    require( _end > dateIcoStart );
 
     // set new ICO end date
-    dateICOEnd = _end;
+    dateIcoEnd = _end;
     DatesIcoUpdated(0, _end);
   }
 
@@ -591,10 +591,10 @@ contract GamesToken is ERC20Token {
     require( _amount <= this.balance );
 
     // after ICO starts, withdrawals only if funding threshold reached
-    require( atNow() < dateICOStart  || isIcoThresholdReached() );
+    require( atNow() < dateIcoStart  || isIcoThresholdReached() );
 
     // register withdrawals befor ICO
-    if (atNow() < dateICOStart) presaleEtherWithdrawn = presaleEtherWithdrawn.add(_amount);
+    if (atNow() < dateIcoStart) presaleEtherWithdrawn = presaleEtherWithdrawn.add(_amount);
 
     wallet.transfer(_amount);
   }
@@ -624,7 +624,7 @@ contract GamesToken is ERC20Token {
     if (ts > DATE_PRESALE_START && ts < DATE_PRESALE_END) {
       isPresale = true;
     }
-    else if (ts > dateICOStart && !isIcoFinished()) {
+    else if (ts > dateIcoStart && !isIcoFinished()) {
       isIco = true;
     }
     require( isPresale || isIco );
@@ -657,7 +657,7 @@ contract GamesToken is ERC20Token {
     //
     if (isIco)
     {
-      if (atNow() < dateICOStart + 2 days) {
+      if (atNow() < dateIcoStart + 2 days) {
         // first two days
         tokens = TOKETH_ICO_ONE.mul(msg.value) / E18;
       }

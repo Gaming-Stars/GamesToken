@@ -38,7 +38,7 @@ contract('Check Variable Changes', function (accounts) {
     })
 
     await gamesToken.updateDateIcoStart(preSaleEndTime + 1, {from: owner});
-    assert.equal(await gamesToken.dateICOStart.call(), preSaleEndTime + 1, "Start date should be updated");
+    assert.equal(await gamesToken.dateIcoStart.call(), preSaleEndTime + 1, "Start date should be updated");
 
     //Set it back to default value
     await gamesToken.updateDateIcoStart(saleStartTime, {from: owner});
@@ -52,19 +52,19 @@ contract('Check Variable Changes', function (accounts) {
 
     //Can't set ICO start before now
     await assertFail(async () => {
-      await gamesToken.updateIcoDateEnd(1, {from: owner});
+      await gamesToken.updateDateIcoEnd(1, {from: owner});
     })
 
     //Can't set start time after end time
     await assertFail(async () => {
-      await gamesToken.updateIcoDateEnd(saleStartTime - 1, {from: owner});
+      await gamesToken.updateDateIcoEnd(saleStartTime - 1, {from: owner});
     })
 
-    await gamesToken.updateIcoDateEnd(saleStartTime + 1, {from: owner});
-    assert.equal(await gamesToken.dateICOEnd.call(), saleStartTime + 1, "End date should be updated");
+    await gamesToken.updateDateIcoEnd(saleStartTime + 1, {from: owner});
+    assert.equal(await gamesToken.dateIcoEnd.call(), saleStartTime + 1, "End date should be updated");
 
     //Set it back to default value
-    await gamesToken.updateIcoDateEnd(saleEndTime, {from: owner});
+    await gamesToken.updateDateIcoEnd(saleEndTime, {from: owner});
 
   });
 

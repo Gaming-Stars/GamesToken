@@ -6,7 +6,7 @@ contract GamesTokenMock is GamesToken {
 
   event MockNow(uint _now);
 
-  uint mock_now = 1;
+  uint public mock_now = 1;
 
   function GamesTokenMock() {}
 
